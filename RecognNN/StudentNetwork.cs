@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -7,6 +8,63 @@ namespace NeuralNetwork1
 {
     public class StudentNetwork : BaseNetwork
     {
+        public override void Save(string filePath)
+        {
+            using (StreamWriter writer = File.CreateText(filePath))
+            {
+                //Запись информации о слоях
+                for (int i = 0; i < layers.Length; ++i)
+                {
+                    writer.Write(layers[i].Length);
+                    if (i < layers.Length - 1) writer.Write(";");
+                }
+                writer.Write(Environment.NewLine);
+                //Запись информации о нейронах каждого слоя
+                for (int i = 1; i < layers.Length; ++i)
+                {
+                    for (int j = 0; j < layers[i].Length; ++j)
+                    {
+                        writer.Write($"{layers[i][j].biasWeight};{string.Join(" ", layers[i][j].weights)}");
+                        if (j < layers[i].Length - 1) writer.Write("N");
+                    }
+                    if (i < layers.Length - 1) writer.Write(Environment.NewLine);
+                }
+            }
+            Debug.WriteLine("Нейросеть сохранена!");
+        }
+        public override void Load(string filename)
+        {
+            var lines = File.ReadAllLines(filename);
+
+            // Загрузка информации о слоях
+            var layerSizes = lines[0].Split(';').Select(int.Parse).ToArray();
+            layers = layerSizes.Select(size => new Neuron[size]).ToArray();
+            sensors = layers[0];
+            outputs = layers[layers.Length - 1];
+
+            // Загрузка информации о нейронах каждого слоя
+            for (int i = 0; i < layers[0].Length; ++i)
+            {
+                layers[0][i] = new Neuron();
+            }
+            for (int i = 1; i < lines.Length; ++i)
+            {
+                var neuronInfo = lines[i].Split('N');
+
+                for (int j = 0; j < neuronInfo.Length; ++j)
+                {
+                    var neuronData = neuronInfo[j].Split(';');
+                    double biasWeight = double.Parse(neuronData[0]);
+                    double[] weights = neuronData[1].Split(' ').Select(x=>double.Parse(x)).ToArray();
+
+                    layers[i][j] = new Neuron();
+                    layers[i][j].weights = weights;
+                    layers[i][j].biasWeight = biasWeight;
+                    layers[i][j].inputs = layers[i - 1];
+                }
+            }
+            Debug.WriteLine("Нейросеть загружена!");
+        }
         private static double Sigmoid(double x) => 1.0 / (1.0 + Math.Exp(-x));
         private static double SigmoidDerivative(double x) => x * (1 - x);
 
@@ -41,6 +99,10 @@ namespace NeuralNetwork1
                 inputs = prevLayerNeurons;
                 weights = new double[inputs.Length];
                 randomizeWeights();
+            }
+            public Neuron()
+            {
+
             }
             private void randomizeWeights()
             {

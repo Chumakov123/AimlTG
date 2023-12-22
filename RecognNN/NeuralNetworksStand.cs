@@ -16,9 +16,9 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 namespace NeuralNetwork1
 {
     delegate void FormUpdateDelegate();
-
     public partial class NeuralNetworksStand : Form
     {
+        static string path = Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).FullName).FullName;
         /// <summary>
         /// Генератор изображений (образов)
         /// </summary>
@@ -63,6 +63,13 @@ namespace NeuralNetwork1
             controllerForLoader = new Controller(new FormUpdateDelegate(UpdateFormFields));
             loader = new Loader(controllerForLoader, this);
             loader.FigureCount = (int)classCounter.Value;
+
+            List<string> split = netStructureBox.Text.Split(';').ToList();
+            netStructureBox.Text = (Program.size * 2).ToString();
+            for (int i = 1; i < split.Count(); i++)
+            {
+                netStructureBox.Text += ";" + split[i];
+            }
         }
 
         public void UpdateLearningInfo(double progress, double error, TimeSpan elapsedTime)
@@ -420,6 +427,16 @@ namespace NeuralNetwork1
 
             //Net.Train(fig, 0.00005, parallelCheckBox.Checked);
             //set_result(fig);
+        }
+
+        private void bt_save_network_Click(object sender, EventArgs e)
+        {
+            Net.Save(path + "\\Networks\\network.txt");
+        }
+
+        private void bt_load_network_Click(object sender, EventArgs e)
+        {
+            Net.Load(path + "\\Networks\\network.txt");
         }
     }
 }

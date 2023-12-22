@@ -8,6 +8,9 @@ namespace NeuralNetwork1
     /// </summary>
     public abstract class BaseNetwork
     {
+        public int MethodIndex = 0;
+        public abstract void Save(string filename);
+        public abstract void Load(string filename);
         // Событие обновления прогресса обучения (форма подписывается для того чтобы знать о том, сколько процентов работы сделано, и обновлять прогрессбар)
         public event TrainProgressHandler TrainProgress;
 

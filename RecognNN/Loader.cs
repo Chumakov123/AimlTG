@@ -10,7 +10,7 @@ namespace NeuralNetwork1
 {
     class Loader
     {
-        public bool[] img48 = new bool[48 * 48];
+        public bool[] image = new bool[Program.size * Program.size];
         private Random rand = new Random();
 
         public FigureType currentFigure = FigureType.Undef;
@@ -35,9 +35,9 @@ namespace NeuralNetwork1
         // функция очистки изображений
         private void ClearImage()
         {
-            for (int i = 0; i < 48; ++i)
-                for (int j = 0; j < 48; ++j)
-                    img48[i * 48 + j] = false;
+            for (int i = 0; i < Program.size; ++i)
+                for (int j = 0; j < Program.size; ++j)
+                    image[i * Program.size + j] = false;
         }
 
         // геттер обучающей выборки
@@ -61,6 +61,9 @@ namespace NeuralNetwork1
             SamplesSet MethodSumSamples = new SamplesSet();
             // Выборка для метода чередования
             SamplesSet MethodAltSamples = new SamplesSet();
+
+            SamplesSet MethodPixelSamples = new SamplesSet();
+            SamplesSet MethodCombinedSamples = new SamplesSet();
             // путь к dataset
             string path = Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).FullName).FullName + "\\Dataset";
             // получение всех директорий
@@ -82,14 +85,14 @@ namespace NeuralNetwork1
                     currentFigure = (FigureType)i;
 
                     // получение изображения
-                    for (int x = 0; x < 48; x++)
+                    for (int x = 0; x < Program.size; x++)
                     {
-                        for (int y = 0; y < 48; y++)
+                        for (int y = 0; y < Program.size; y++)
                         {
                             Color newColor = bmp48.GetPixel(x, y);
                             if (newColor.R < threshold || newColor.G < threshold || newColor.B < threshold)
                             {
-                                img48[x * 48 + y] = true;
+                                image[x * Program.size + y] = true;
                             }
                         }
                     }
@@ -99,11 +102,19 @@ namespace NeuralNetwork1
 
                     // добавление в выборку метода чередования
                     MethodAltSamples.AddSample(MethodAlt());
+
+                    // добавление в выборку метода суммирования
+                    MethodPixelSamples.AddSample(MethodPixel());
+
+                    // добавление в выборку метода чередования
+                    MethodCombinedSamples.AddSample(MethodCombined());
                 }
             }
 
-            SaveSamples("samples.txt", MethodSumSamples);
-            SaveSamples("samples2.txt", MethodAltSamples);
+            SaveSamples("sum.txt", MethodSumSamples);
+            SaveSamples("alt.txt", MethodAltSamples);
+            SaveSamples("combo.txt", MethodCombinedSamples);
+            SaveSamples("pixel.txt", MethodPixelSamples);
         }
 
         // Функция хэширования выборки в файл
@@ -144,12 +155,12 @@ namespace NeuralNetwork1
             switch (method)
             {
                 case 0: // метод сложение пикселей по строке и столбцу
-                    nameFile = "samples.txt";
-                    size = 96;
+                    nameFile = "sum.txt";
+                    size = Program.size * 2;
                     break;
                 case 2: // метод чередования пикселей
                     nameFile = "samples2.txt";
-                    size = 96;
+                    size = Program.size * 2;
                     break;
                 default:
                     break;
@@ -204,14 +215,14 @@ namespace NeuralNetwork1
             
             Bitmap bmp48 = !isInput ? GetRandomImage() : GetInputImage();
             // получение изображения
-            for (int x = 0; x < 48; x++)
+            for (int x = 0; x < Program.size; x++)
             {
-                for (int y = 0; y < 48; y++)
+                for (int y = 0; y < Program.size; y++)
                 {
                     Color newColor = bmp48.GetPixel(x, y);
                     if (newColor.R < threshold || newColor.G < threshold || newColor.B < threshold)
                     {
-                        img48[x * 48 + y] = true;
+                        image[x * Program.size + y] = true;
                     }
                 }
             }
@@ -220,8 +231,12 @@ namespace NeuralNetwork1
             {
                 case 0:
                     return MethodSum(); // создание Sample с помощью метода суммирования
+                case 1:
+                    return MethodPixel();
                 case 2:
                     return MethodAlt(); // создание Sample с помощью метода чередования
+                case 3:
+                    return MethodCombined();
                 default:
                     return null;
             }
@@ -262,7 +277,7 @@ namespace NeuralNetwork1
 
             // загрузка изображения
             Bitmap bmp = new Bitmap(Image.FromFile(pathFile));
-            //if (bmp.Width > 48)
+            //if (bmp.Width > Program.size)
             {
                 controller.processor.ProcessImage(bmp, true);
 
@@ -278,65 +293,117 @@ namespace NeuralNetwork1
         private Sample MethodSum()
         {
             // input для метода суммирования
-            double[] inputSum = new double[96];
-            for (int k = 0; k < 96; k++)
+            double[] inputSum = new double[Program.size * 2];
+            for (int k = 0; k < Program.size * 2; k++)
                 inputSum[k] = 0;
 
             // получение вектора признаков метода суммирования
-            for (int x = 0; x < 48; x++)
-                for (int y = 0; y < 48; y++)
+            for (int x = 0; x < Program.size; x++)
+                for (int y = 0; y < Program.size; y++)
                 {
-                    if (!img48[x * 48 + y])
+                    if (!image[x * Program.size + y])
                     {
                         inputSum[x] += 1;
-                        inputSum[48 + y] += 1;
+                        inputSum[Program.size + y] += 1;
                     }
                 }
 
             // добавление в выборку метода суммирования
             return new Sample(inputSum, FigureCount, currentFigure);
         }
-
-        private Sample MethodAgr()
+        // Попиксельный метод
+        private Sample MethodPixel()
         {
-            return null;
+            double[] inputPixel = new double[Program.size * Program.size];
+            for (int k = 0; k < Program.size * Program.size; k++)
+                inputPixel[k] = 0;
+
+            for (int x = 0; x < Program.size; x++)
+            {
+                for (int y = 0; y < Program.size; y++)
+                {
+                    if (image[x * Program.size + y])
+                    {
+                        inputPixel[x * Program.size + y] = 1;
+                    }
+                }
+            }
+
+            return new Sample(inputPixel, FigureCount, currentFigure);
         }
 
         // метод чередования
         private Sample MethodAlt()
         {
             // input для метода чередования
-            double[] inputAlt = new double[96];
-            for (int k = 0; k < 96; k++)
+            double[] inputAlt = new double[Program.size * 2];
+            for (int k = 0; k < Program.size * 2; k++)
                 inputAlt[k] = 0;
 
 
             // получение вектора признаков метода чередования
-            for (int x = 0; x < 48; x++)
-                for (int y = 0; y < 48; y++)
-                    if (x - 1 > 0 && img48[x * 48 + y] != img48[(x - 1) * 48 + y])
+            for (int x = 0; x < Program.size; x++)
+                for (int y = 0; y < Program.size; y++)
+                    if (x - 1 > 0 && image[x * Program.size + y] != image[(x - 1) * Program.size + y])
                     {
                         inputAlt[x] += 1;
                     }
 
-            for (int x = 0; x < 48; x++)
-                for (int y = 0; y < 48; y++)
-                    if (y - 1 > 0 && img48[x * 48 + y] != img48[x * 48 + y - 1])
+            for (int x = 0; x < Program.size; x++)
+                for (int y = 0; y < Program.size; y++)
+                    if (y - 1 > 0 && image[x * Program.size + y] != image[x * Program.size + y - 1])
                     {
-                        inputAlt[48 + y] += 1;
+                        inputAlt[Program.size + y] += 1;
                     }
 
             // добавление в выборку метода чередования
             return new Sample(inputAlt, FigureCount, currentFigure);
         }
 
+        private Sample MethodCombined()
+        {
+            // input для метода чередования
+            double[] inputCombo = new double[Program.size * 2];
+            for (int k = 0; k < Program.size * 2; k++)
+                inputCombo[k] = 0;
+
+            // получение вектора признаков метода суммирования
+            for (int x = 0; x < Program.size; x++)
+                for (int y = 0; y < Program.size; y++)
+                {
+                    if (!image[x * Program.size + y])
+                    {
+                        inputCombo[x] += 1;
+                        inputCombo[Program.size + y] += 1;
+                    }
+                }
+
+            // получение вектора признаков метода чередования
+            for (int x = 0; x < Program.size; x++)
+                for (int y = 0; y < Program.size; y++)
+                    if (x - 1 > 0 && image[x * Program.size + y] != image[(x - 1) * Program.size + y])
+                    {
+                        inputCombo[x] += 1;
+                    }
+
+            for (int x = 0; x < Program.size; x++)
+                for (int y = 0; y < Program.size; y++)
+                    if (y - 1 > 0 && image[x * Program.size + y] != image[x * Program.size + y - 1])
+                    {
+                        inputCombo[Program.size + y] += 1;
+                    }
+
+            // добавление в выборку метода чередования
+            return new Sample(inputCombo, FigureCount, currentFigure);
+        }
+
         // Функция отрисовки изображения на pictureBox
         public Bitmap GenImage()
         {
-            Bitmap drawArea = new Bitmap(48, 48);
-            for (int i = 0; i < 48; ++i)
-                for (int j = 0; j < 48; ++j)
-                    if (!img48[i * 48 + j]) drawArea.SetPixel(i, j, Color.Black);
+            Bitmap drawArea = new Bitmap(Program.size, Program.size);
+            for (int i = 0; i < Program.size; ++i)
+                for (int j = 0; j < Program.size; ++j)
+                    if (!image[i * Program.size + j]) drawArea.SetPixel(i, j, Color.Black);
             return drawArea;
         }
     }

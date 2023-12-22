@@ -27,6 +27,7 @@ namespace NeuralNetwork1
             { FigureType.Undef, "Undef"},
         };
         public static Dictionary<FigureType, string> folders;
+        public static int size = 48;
         [STAThread]
         static void Main()
         {
@@ -36,6 +37,7 @@ namespace NeuralNetwork1
             {
                 // Тут можно добавить свои нейросети
                 {"Студенческий персептрон", structure => new StudentNetwork(structure)},
+                {"Дополнительный персептрон", structure => new StudentNetwork(structure)},
             }));
         }
 

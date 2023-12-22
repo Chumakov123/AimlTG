@@ -37,12 +37,16 @@
             this.controlPanel = new System.Windows.Forms.Panel();
             this.button_F = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.cb_multy_recogn = new System.Windows.Forms.CheckBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
             this.tresholdTrackBar = new System.Windows.Forms.TrackBar();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.st_lable = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.bt_save_network = new System.Windows.Forms.Button();
+            this.cb_methods = new System.Windows.Forms.ComboBox();
+            this.bt_load_network = new System.Windows.Forms.Button();
             this.createDataset = new System.Windows.Forms.Button();
             this.LoadDataset = new System.Windows.Forms.Button();
             this.label11 = new System.Windows.Forms.Label();
@@ -63,17 +67,13 @@
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.tb_aiml_answer = new System.Windows.Forms.TextBox();
+            this.bt_aiml_process = new System.Windows.Forms.Button();
+            this.tb_aiml_request = new System.Windows.Forms.TextBox();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.tb_aiml_request = new System.Windows.Forms.TextBox();
-            this.bt_aiml_process = new System.Windows.Forms.Button();
-            this.tb_aiml_answer = new System.Windows.Forms.TextBox();
-            this.tb_tlbot_answer = new System.Windows.Forms.TextBox();
             this.bt_enable_bot = new System.Windows.Forms.Button();
-            this.bt_load_network = new System.Windows.Forms.Button();
-            this.cb_multy_recogn = new System.Windows.Forms.CheckBox();
-            this.cb_methods = new System.Windows.Forms.ComboBox();
-            this.bt_save_network = new System.Windows.Forms.Button();
+            this.tb_tlbot_answer = new System.Windows.Forms.TextBox();
             label2 = new System.Windows.Forms.Label();
             label4 = new System.Windows.Forms.Label();
             label5 = new System.Windows.Forms.Label();
@@ -176,6 +176,16 @@
             this.panel2.Size = new System.Drawing.Size(349, 85);
             this.panel2.TabIndex = 39;
             // 
+            // cb_multy_recogn
+            // 
+            this.cb_multy_recogn.AutoSize = true;
+            this.cb_multy_recogn.Location = new System.Drawing.Point(145, 31);
+            this.cb_multy_recogn.Name = "cb_multy_recogn";
+            this.cb_multy_recogn.Size = new System.Drawing.Size(189, 17);
+            this.cb_multy_recogn.TabIndex = 25;
+            this.cb_multy_recogn.Text = "Множественное распознавание";
+            this.cb_multy_recogn.UseVisualStyleBackColor = true;
+            // 
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
@@ -261,6 +271,39 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Параметры сети";
             // 
+            // bt_save_network
+            // 
+            this.bt_save_network.Location = new System.Drawing.Point(272, 161);
+            this.bt_save_network.Name = "bt_save_network";
+            this.bt_save_network.Size = new System.Drawing.Size(106, 30);
+            this.bt_save_network.TabIndex = 26;
+            this.bt_save_network.Text = "Сохранить сеть";
+            this.bt_save_network.UseVisualStyleBackColor = true;
+            this.bt_save_network.Click += new System.EventHandler(this.bt_save_network_Click);
+            // 
+            // cb_methods
+            // 
+            this.cb_methods.FormattingEnabled = true;
+            this.cb_methods.Items.AddRange(new object[] {
+            "Суммирование",
+            "Пиксели",
+            "Чередование",
+            "Комбинированный"});
+            this.cb_methods.Location = new System.Drawing.Point(292, 78);
+            this.cb_methods.Name = "cb_methods";
+            this.cb_methods.Size = new System.Drawing.Size(121, 21);
+            this.cb_methods.TabIndex = 25;
+            // 
+            // bt_load_network
+            // 
+            this.bt_load_network.Location = new System.Drawing.Point(151, 161);
+            this.bt_load_network.Name = "bt_load_network";
+            this.bt_load_network.Size = new System.Drawing.Size(115, 30);
+            this.bt_load_network.TabIndex = 24;
+            this.bt_load_network.Text = "Загрузить сеть";
+            this.bt_load_network.UseVisualStyleBackColor = true;
+            this.bt_load_network.Click += new System.EventHandler(this.bt_load_network_Click);
+            // 
             // createDataset
             // 
             this.createDataset.Location = new System.Drawing.Point(292, 17);
@@ -319,7 +362,7 @@
             this.netStructureBox.Name = "netStructureBox";
             this.netStructureBox.Size = new System.Drawing.Size(120, 20);
             this.netStructureBox.TabIndex = 18;
-            this.netStructureBox.Text = "96;500;50;10";
+            this.netStructureBox.Text = "96;600;10";
             // 
             // recreateNetButton
             // 
@@ -498,6 +541,30 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "AIML чат-бот";
             // 
+            // tb_aiml_answer
+            // 
+            this.tb_aiml_answer.Location = new System.Drawing.Point(6, 78);
+            this.tb_aiml_answer.Multiline = true;
+            this.tb_aiml_answer.Name = "tb_aiml_answer";
+            this.tb_aiml_answer.Size = new System.Drawing.Size(314, 96);
+            this.tb_aiml_answer.TabIndex = 2;
+            // 
+            // bt_aiml_process
+            // 
+            this.bt_aiml_process.Location = new System.Drawing.Point(219, 47);
+            this.bt_aiml_process.Name = "bt_aiml_process";
+            this.bt_aiml_process.Size = new System.Drawing.Size(101, 25);
+            this.bt_aiml_process.TabIndex = 1;
+            this.bt_aiml_process.Text = "Обработать";
+            this.bt_aiml_process.UseVisualStyleBackColor = true;
+            // 
+            // tb_aiml_request
+            // 
+            this.tb_aiml_request.Location = new System.Drawing.Point(6, 24);
+            this.tb_aiml_request.Name = "tb_aiml_request";
+            this.tb_aiml_request.Size = new System.Drawing.Size(314, 20);
+            this.tb_aiml_request.TabIndex = 0;
+            // 
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.bt_enable_bot);
@@ -509,38 +576,6 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Telegram";
             // 
-            // tb_aiml_request
-            // 
-            this.tb_aiml_request.Location = new System.Drawing.Point(6, 24);
-            this.tb_aiml_request.Name = "tb_aiml_request";
-            this.tb_aiml_request.Size = new System.Drawing.Size(314, 20);
-            this.tb_aiml_request.TabIndex = 0;
-            // 
-            // bt_aiml_process
-            // 
-            this.bt_aiml_process.Location = new System.Drawing.Point(219, 47);
-            this.bt_aiml_process.Name = "bt_aiml_process";
-            this.bt_aiml_process.Size = new System.Drawing.Size(101, 25);
-            this.bt_aiml_process.TabIndex = 1;
-            this.bt_aiml_process.Text = "Обработать";
-            this.bt_aiml_process.UseVisualStyleBackColor = true;
-            // 
-            // tb_aiml_answer
-            // 
-            this.tb_aiml_answer.Location = new System.Drawing.Point(6, 78);
-            this.tb_aiml_answer.Multiline = true;
-            this.tb_aiml_answer.Name = "tb_aiml_answer";
-            this.tb_aiml_answer.Size = new System.Drawing.Size(314, 96);
-            this.tb_aiml_answer.TabIndex = 2;
-            // 
-            // tb_tlbot_answer
-            // 
-            this.tb_tlbot_answer.Location = new System.Drawing.Point(6, 48);
-            this.tb_tlbot_answer.Multiline = true;
-            this.tb_tlbot_answer.Name = "tb_tlbot_answer";
-            this.tb_tlbot_answer.Size = new System.Drawing.Size(314, 256);
-            this.tb_tlbot_answer.TabIndex = 0;
-            // 
             // bt_enable_bot
             // 
             this.bt_enable_bot.Location = new System.Drawing.Point(219, 19);
@@ -550,45 +585,13 @@
             this.bt_enable_bot.Text = "Включить бота";
             this.bt_enable_bot.UseVisualStyleBackColor = true;
             // 
-            // bt_load_network
+            // tb_tlbot_answer
             // 
-            this.bt_load_network.Location = new System.Drawing.Point(151, 161);
-            this.bt_load_network.Name = "bt_load_network";
-            this.bt_load_network.Size = new System.Drawing.Size(115, 30);
-            this.bt_load_network.TabIndex = 24;
-            this.bt_load_network.Text = "Загрузить сеть";
-            this.bt_load_network.UseVisualStyleBackColor = true;
-            // 
-            // cb_multy_recogn
-            // 
-            this.cb_multy_recogn.AutoSize = true;
-            this.cb_multy_recogn.Location = new System.Drawing.Point(145, 31);
-            this.cb_multy_recogn.Name = "cb_multy_recogn";
-            this.cb_multy_recogn.Size = new System.Drawing.Size(189, 17);
-            this.cb_multy_recogn.TabIndex = 25;
-            this.cb_multy_recogn.Text = "Множественное распознавание";
-            this.cb_multy_recogn.UseVisualStyleBackColor = true;
-            // 
-            // cb_methods
-            // 
-            this.cb_methods.FormattingEnabled = true;
-            this.cb_methods.Items.AddRange(new object[] {
-            "Суммирование",
-            "Чередование",
-            "Пиксели"});
-            this.cb_methods.Location = new System.Drawing.Point(292, 78);
-            this.cb_methods.Name = "cb_methods";
-            this.cb_methods.Size = new System.Drawing.Size(121, 21);
-            this.cb_methods.TabIndex = 25;
-            // 
-            // bt_save_network
-            // 
-            this.bt_save_network.Location = new System.Drawing.Point(272, 161);
-            this.bt_save_network.Name = "bt_save_network";
-            this.bt_save_network.Size = new System.Drawing.Size(128, 30);
-            this.bt_save_network.TabIndex = 26;
-            this.bt_save_network.Text = "Сохранить нейросеть";
-            this.bt_save_network.UseVisualStyleBackColor = true;
+            this.tb_tlbot_answer.Location = new System.Drawing.Point(6, 48);
+            this.tb_tlbot_answer.Multiline = true;
+            this.tb_tlbot_answer.Name = "tb_tlbot_answer";
+            this.tb_tlbot_answer.Size = new System.Drawing.Size(314, 256);
+            this.tb_tlbot_answer.TabIndex = 0;
             // 
             // NeuralNetworksStand
             // 
