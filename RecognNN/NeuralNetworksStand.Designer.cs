@@ -66,10 +66,14 @@
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.tb_aiml_request = new System.Windows.Forms.TextBox();
-            this.bt_aiml_send = new System.Windows.Forms.Button();
+            this.bt_aiml_process = new System.Windows.Forms.Button();
             this.tb_aiml_answer = new System.Windows.Forms.TextBox();
             this.tb_tlbot_answer = new System.Windows.Forms.TextBox();
             this.bt_enable_bot = new System.Windows.Forms.Button();
+            this.bt_load_network = new System.Windows.Forms.Button();
+            this.cb_multy_recogn = new System.Windows.Forms.CheckBox();
+            this.cb_methods = new System.Windows.Forms.ComboBox();
+            this.bt_save_network = new System.Windows.Forms.Button();
             label2 = new System.Windows.Forms.Label();
             label4 = new System.Windows.Forms.Label();
             label5 = new System.Windows.Forms.Label();
@@ -163,6 +167,7 @@
             // panel2
             // 
             this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel2.Controls.Add(this.cb_multy_recogn);
             this.panel2.Controls.Add(this.checkBox1);
             this.panel2.Controls.Add(this.label3);
             this.panel2.Controls.Add(this.tresholdTrackBar);
@@ -176,7 +181,7 @@
             this.checkBox1.AutoSize = true;
             this.checkBox1.Checked = true;
             this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.Location = new System.Drawing.Point(145, 11);
+            this.checkBox1.Location = new System.Drawing.Point(145, 8);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(86, 17);
             this.checkBox1.TabIndex = 24;
@@ -227,6 +232,9 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.bt_save_network);
+            this.groupBox1.Controls.Add(this.cb_methods);
+            this.groupBox1.Controls.Add(this.bt_load_network);
             this.groupBox1.Controls.Add(this.createDataset);
             this.groupBox1.Controls.Add(this.LoadDataset);
             this.groupBox1.Controls.Add(this.label11);
@@ -311,13 +319,13 @@
             this.netStructureBox.Name = "netStructureBox";
             this.netStructureBox.Size = new System.Drawing.Size(120, 20);
             this.netStructureBox.TabIndex = 18;
-            this.netStructureBox.Text = "96;500;50;2";
+            this.netStructureBox.Text = "96;500;50;10";
             // 
             // recreateNetButton
             // 
-            this.recreateNetButton.Location = new System.Drawing.Point(77, 161);
+            this.recreateNetButton.Location = new System.Drawing.Point(25, 161);
             this.recreateNetButton.Name = "recreateNetButton";
-            this.recreateNetButton.Size = new System.Drawing.Size(140, 30);
+            this.recreateNetButton.Size = new System.Drawing.Size(120, 30);
             this.recreateNetButton.TabIndex = 17;
             this.recreateNetButton.Text = "Пересоздать сеть";
             this.recreateNetButton.UseVisualStyleBackColor = true;
@@ -481,7 +489,7 @@
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.tb_aiml_answer);
-            this.groupBox2.Controls.Add(this.bt_aiml_send);
+            this.groupBox2.Controls.Add(this.bt_aiml_process);
             this.groupBox2.Controls.Add(this.tb_aiml_request);
             this.groupBox2.Location = new System.Drawing.Point(803, 24);
             this.groupBox2.Name = "groupBox2";
@@ -508,14 +516,14 @@
             this.tb_aiml_request.Size = new System.Drawing.Size(314, 20);
             this.tb_aiml_request.TabIndex = 0;
             // 
-            // bt_aiml_send
+            // bt_aiml_process
             // 
-            this.bt_aiml_send.Location = new System.Drawing.Point(219, 47);
-            this.bt_aiml_send.Name = "bt_aiml_send";
-            this.bt_aiml_send.Size = new System.Drawing.Size(101, 25);
-            this.bt_aiml_send.TabIndex = 1;
-            this.bt_aiml_send.Text = "Обработать";
-            this.bt_aiml_send.UseVisualStyleBackColor = true;
+            this.bt_aiml_process.Location = new System.Drawing.Point(219, 47);
+            this.bt_aiml_process.Name = "bt_aiml_process";
+            this.bt_aiml_process.Size = new System.Drawing.Size(101, 25);
+            this.bt_aiml_process.TabIndex = 1;
+            this.bt_aiml_process.Text = "Обработать";
+            this.bt_aiml_process.UseVisualStyleBackColor = true;
             // 
             // tb_aiml_answer
             // 
@@ -542,6 +550,46 @@
             this.bt_enable_bot.Text = "Включить бота";
             this.bt_enable_bot.UseVisualStyleBackColor = true;
             // 
+            // bt_load_network
+            // 
+            this.bt_load_network.Location = new System.Drawing.Point(151, 161);
+            this.bt_load_network.Name = "bt_load_network";
+            this.bt_load_network.Size = new System.Drawing.Size(115, 30);
+            this.bt_load_network.TabIndex = 24;
+            this.bt_load_network.Text = "Загрузить сеть";
+            this.bt_load_network.UseVisualStyleBackColor = true;
+            // 
+            // cb_multy_recogn
+            // 
+            this.cb_multy_recogn.AutoSize = true;
+            this.cb_multy_recogn.Location = new System.Drawing.Point(145, 31);
+            this.cb_multy_recogn.Name = "cb_multy_recogn";
+            this.cb_multy_recogn.Size = new System.Drawing.Size(189, 17);
+            this.cb_multy_recogn.TabIndex = 25;
+            this.cb_multy_recogn.Text = "Множественное распознавание";
+            this.cb_multy_recogn.UseVisualStyleBackColor = true;
+            // 
+            // cb_methods
+            // 
+            this.cb_methods.FormattingEnabled = true;
+            this.cb_methods.Items.AddRange(new object[] {
+            "Суммирование",
+            "Чередование",
+            "Пиксели"});
+            this.cb_methods.Location = new System.Drawing.Point(292, 78);
+            this.cb_methods.Name = "cb_methods";
+            this.cb_methods.Size = new System.Drawing.Size(121, 21);
+            this.cb_methods.TabIndex = 25;
+            // 
+            // bt_save_network
+            // 
+            this.bt_save_network.Location = new System.Drawing.Point(272, 161);
+            this.bt_save_network.Name = "bt_save_network";
+            this.bt_save_network.Size = new System.Drawing.Size(128, 30);
+            this.bt_save_network.TabIndex = 26;
+            this.bt_save_network.Text = "Сохранить нейросеть";
+            this.bt_save_network.UseVisualStyleBackColor = true;
+            // 
             // NeuralNetworksStand
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -564,7 +612,7 @@
             this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
             this.Name = "NeuralNetworksStand";
-            this.Text = "Продвинутый студенческий перспетрон";
+            this.Text = "Студенческий бот-распознаватель";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.controlPanel.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
@@ -620,12 +668,16 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.TextBox tb_aiml_answer;
-        private System.Windows.Forms.Button bt_aiml_send;
+        private System.Windows.Forms.Button bt_aiml_process;
         private System.Windows.Forms.TextBox tb_aiml_request;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.TextBox tb_tlbot_answer;
         private System.Windows.Forms.Button bt_enable_bot;
+        private System.Windows.Forms.Button bt_load_network;
+        private System.Windows.Forms.CheckBox cb_multy_recogn;
+        private System.Windows.Forms.ComboBox cb_methods;
+        private System.Windows.Forms.Button bt_save_network;
     }
 }
 

@@ -57,6 +57,7 @@ namespace NeuralNetwork1
             netTypeBox.SelectedIndex = 0;
             button3_Click(this, null);
             pictureBox1.Image = Properties.Resources.Title;
+            cb_methods.SelectedIndex = 0;
 
             controller = new Controller(new FormUpdateDelegate(UpdateFormFields));
             controllerForLoader = new Controller(new FormUpdateDelegate(UpdateFormFields));
@@ -383,37 +384,6 @@ namespace NeuralNetwork1
             loader.CreateDataset();
         }
 
-        private void btn_30_load_Click(object sender, EventArgs e)
-        {
-            Random rand = new Random();
-
-            // путь к dataset
-            string path = Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).FullName).FullName + "\\Dataset";
-            // получение всех директорий
-            List<string> directories = Directory.GetDirectories(path).ToList();
-
-            // получение случайной директории(класса)
-            int randomDirectory = rand.Next(0, 10);
-            List<string> files = Directory.GetFiles(directories[randomDirectory]).ToList();
-
-            // получение случайной файла
-            int randomFile = rand.Next(0, files.Count());
-
-
-            // загрузка изображения
-            Bitmap bmp = new Bitmap(System.Drawing.Image.FromFile(files[randomFile]));
-
-            controller.processor.ProcessImage(bmp, true);
-
-
-            //Bitmap bmp = new Bitmap(test30_pict.Width, test30_pict.Height);
-            //Graphics g = Graphics.FromImage(bmp);
-            //g.Clear(Color.White);
-            //g.DrawImage(test300_pict.Image, new Rectangle(0, 0, 30, 30));
-            //test30_pict.Image = bmp;
-        }
-
-
         private void button_F_Click(object sender, EventArgs e)
         {
             MakePhoto();
@@ -435,22 +405,6 @@ namespace NeuralNetwork1
             //recognizedBox.Image = controller.processor.processed;
             string path = Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).FullName).FullName + "\\Dataset";
             controller.processor.processed.Save(path + "\\input.jpg");
-        }
-
-        private void check_photo_Click(object sender, EventArgs e)
-        {
-            //Sample photo = loader.CheckImage(comboBoxMethod.SelectedIndex);
-            Sample photo = null;
-
-            // отрисовка
-            if (Net == null) return;
-            photo = loader.LoadImage(method_index, true);
-            pictureBox1.Image = loader.GenImage();
-            pictureBox1.Invalidate();
-
-            //
-            Net.Predict(photo);
-            set_result(photo);
         }
 
         private void button_dop_Click(object sender, EventArgs e)
