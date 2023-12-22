@@ -12,6 +12,7 @@ namespace NeuralNetwork1
     public enum FigureType : byte { Play = 0, Pause, Stop, Rec, SpeedUp, SpeedDown, NextFrame, PrevFrame, SkipForward, SkipBackward, Undef };
     static class Program
     {
+        public static int MethodIndex = 0;
         public static Dictionary<FigureType, string> titles = new Dictionary<FigureType, string>
         {
             { FigureType.Play, "Старт"},
@@ -36,8 +37,8 @@ namespace NeuralNetwork1
             Application.Run(new NeuralNetworksStand(new Dictionary<string, Func<int[], BaseNetwork>>
             {
                 // Тут можно добавить свои нейросети
-                {"Студенческий персептрон", structure => new StudentNetwork(structure)},
-                {"Дополнительный персептрон", structure => new StudentNetwork(structure)},
+                {"Первый персептрон", structure => new StudentNetwork(structure)},
+                {"Второй персептрон", structure => new StudentNetwork(structure)},
             }));
         }
 

@@ -293,6 +293,7 @@
             this.cb_methods.Name = "cb_methods";
             this.cb_methods.Size = new System.Drawing.Size(121, 21);
             this.cb_methods.TabIndex = 25;
+            this.cb_methods.SelectedIndexChanged += new System.EventHandler(this.cb_methods_SelectedIndexChanged);
             // 
             // bt_load_network
             // 

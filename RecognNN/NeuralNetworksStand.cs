@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using System.IO;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
+using Accord.Neuro;
 
 namespace NeuralNetwork1
 {
@@ -29,7 +30,6 @@ namespace NeuralNetwork1
         /// <summary>
         /// Текущая выбранная через селектор нейросеть
         /// </summary>
-        int method_index = 2;
         public BaseNetwork Net
         {
             get
@@ -106,10 +106,31 @@ namespace NeuralNetwork1
         {
             //Sample fig = generator.GenerateFigure();
             Sample fig = null;
-            fig = loader.LoadImage(method_index);
+            fig = loader.LoadImage(Net.MethodIndex);
+
+            if (!cb_multy_recogn.Checked)
+            {
+                Net.Predict(fig);
+            }
+            else
+            {
+                var output = new double[fig.Output.Length];
+                foreach (var network in networksCache)
+                {
+                    fig = loader.LoadImage(network.Value.MethodIndex, false, true);
+                    network.Value.Predict(fig);
+                    for (int i = 0; i < output.Length; i++)
+                    {
+                        output[i] += fig.Output[i] / networksCache.Count;
+                    }
+                    //Debug.WriteLine("net " + string.Join("\n", fig.Output));
+                    Debug.WriteLine(network.Key +": " + fig.Correct().ToString());
+                }
+                //Debug.WriteLine("out "+string.Join("\n", output));
+                fig.ProcessPrediction(output);
+            }
             //Sample fig = augmentation.Get30x30();
 
-            Net.Predict(fig);
 
             set_result(fig);
         }
@@ -202,10 +223,19 @@ namespace NeuralNetwork1
             //}
 
             // Чистим старые подписки сетей
-            foreach (var network in networksCache.Values)
-                network.TrainProgress -= UpdateLearningInfo;
+            //foreach (var network in networksCache.Values)
+            //    network.TrainProgress -= UpdateLearningInfo;
             // Пересоздаём все сети с новой структурой
-            networksCache = networksCache.ToDictionary(oldNet => oldNet.Key, oldNet => CreateNetwork(oldNet.Key));
+            //networksCache = networksCache.ToDictionary(oldNet => oldNet.Key, oldNet => CreateNetwork(oldNet.Key));
+            var selectedItem = (string)netTypeBox.SelectedItem;
+            if (!networksCache.ContainsKey(selectedItem))
+            {
+                return;
+            }
+            networksCache[selectedItem].TrainProgress -= UpdateLearningInfo;
+
+            // Пересоздаём выбранную сеть с новой структурой
+            networksCache[selectedItem] = CreateNetwork(selectedItem);
         }
 
         private int[] CurrentNetworkStructure()
@@ -231,7 +261,7 @@ namespace NeuralNetwork1
             Sample fig = null;
             //Sample fig = augmentation.Get30x30();
             //pictureBox1.Image = generator.GenBitmap();
-            fig = loader.LoadImage(method_index);
+            fig = loader.LoadImage(Net.MethodIndex);
             pictureBox1.Image = loader.GenImage();
             //pictureBox1.Image = augmentation.GenBitmap();
             pictureBox1.Invalidate();
@@ -383,7 +413,7 @@ namespace NeuralNetwork1
 
         private void LoadDataset_Click(object sender, EventArgs e)
         {
-            loader.LoadDataset(method_index);
+            loader.LoadDataset(Program.MethodIndex);
         }
 
         private void createDataset_Click(object sender, EventArgs e)
@@ -398,7 +428,7 @@ namespace NeuralNetwork1
 
             // отрисовка
             if (Net == null) return;
-            photo = loader.LoadImage(method_index, true);
+            photo = loader.LoadImage(Program.MethodIndex, true);
             pictureBox1.Image = loader.GenImage();
             pictureBox1.Invalidate();
 
@@ -431,12 +461,40 @@ namespace NeuralNetwork1
 
         private void bt_save_network_Click(object sender, EventArgs e)
         {
-            Net.Save(path + "\\Networks\\network.txt");
+            string filename = "";
+            switch (Net.MethodIndex)
+            {
+                case 0: filename = "sum.txt"; break;
+                case 1: filename = "pixel.txt"; break;
+                case 2: filename = "alt.txt"; break;
+                case 3: filename = "combo.txt"; break;
+            }
+            Net.Save(path + "\\Networks\\" + filename);
         }
 
         private void bt_load_network_Click(object sender, EventArgs e)
         {
-            Net.Load(path + "\\Networks\\network.txt");
+            string filename = "";
+            switch (Program.MethodIndex)
+            {
+                case 0: filename = "sum.txt"; break;
+                case 1: filename = "pixel.txt"; break;
+                case 2: filename = "alt.txt"; break;
+                case 3: filename = "combo.txt"; break;
+            }
+            Net.Load(path + "\\Networks\\" + filename);
+        }
+
+        private void cb_methods_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Program.MethodIndex = cb_methods.SelectedIndex;
+            switch (Program.MethodIndex)
+            {
+                case 0: netStructureBox.Text = $"{Program.size * 2};{600};{classCounter.Value}"; break;
+                case 1: netStructureBox.Text = $"{Program.size * Program.size};{600};{classCounter.Value}"; break;
+                case 2: netStructureBox.Text = $"{Program.size * 2};{600};{classCounter.Value}"; break;
+                case 3: netStructureBox.Text = $"{Program.size * 2};{600};{classCounter.Value}"; break;
+            }
         }
     }
 }

@@ -27,8 +27,10 @@ namespace NeuralNetwork1
                         writer.Write($"{layers[i][j].biasWeight};{string.Join(" ", layers[i][j].weights)}");
                         if (j < layers[i].Length - 1) writer.Write("N");
                     }
-                    if (i < layers.Length - 1) writer.Write(Environment.NewLine);
+                    writer.Write(Environment.NewLine);
                 }
+                //Метод, которым обучена нейросеть
+                writer.Write(MethodIndex);
             }
             Debug.WriteLine("Нейросеть сохранена!");
         }
@@ -47,7 +49,7 @@ namespace NeuralNetwork1
             {
                 layers[0][i] = new Neuron();
             }
-            for (int i = 1; i < lines.Length; ++i)
+            for (int i = 1; i < lines.Length-1; ++i)
             {
                 var neuronInfo = lines[i].Split('N');
 
@@ -63,6 +65,7 @@ namespace NeuralNetwork1
                     layers[i][j].inputs = layers[i - 1];
                 }
             }
+            MethodIndex = int.Parse(lines[lines.Length - 1]);
             Debug.WriteLine("Нейросеть загружена!");
         }
         private static double Sigmoid(double x) => 1.0 / (1.0 + Math.Exp(-x));
@@ -90,7 +93,7 @@ namespace NeuralNetwork1
                 }
                 weightedSum += biasWeight;
 
-                output = Tanh(weightedSum);
+                output = Sigmoid(weightedSum);
             }
             public Neuron(Neuron[] prevLayerNeurons)
             {
@@ -138,6 +141,7 @@ namespace NeuralNetwork1
         }
         private void InitializeNetwork(int[] structure)
         {
+            MethodIndex = Program.MethodIndex;
             if (structure.Length < 2)
                 throw new Exception("Invalid initialize structure");
 
@@ -241,7 +245,7 @@ namespace NeuralNetwork1
                     {
                         sum += layers[layer + 1][k].error * layers[layer + 1][k].weights[j];
                     }
-                    layers[layer][j].error = sum * TanhDerivative(layers[layer][j].output);
+                    layers[layer][j].error = sum * SigmoidDerivative(layers[layer][j].output);
                 }
             }
 

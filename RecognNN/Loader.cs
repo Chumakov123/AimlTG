@@ -158,8 +158,16 @@ namespace NeuralNetwork1
                     nameFile = "sum.txt";
                     size = Program.size * 2;
                     break;
+                case 1:
+                    nameFile = "pixel.txt";
+                    size = Program.size * Program.size;
+                    break;
                 case 2: // метод чередования пикселей
-                    nameFile = "samples2.txt";
+                    nameFile = "alt.txt";
+                    size = Program.size * 2;
+                    break;
+                case 3:
+                    nameFile = "combo.txt";
                     size = Program.size * 2;
                     break;
                 default:
@@ -208,12 +216,22 @@ namespace NeuralNetwork1
             samplesTest = MethodSamplesTest;
         }
 
+        Bitmap lastImage;
         // Функция загрузки случайного изображения для тестирования в зависимости от метода(при нажатии на экран)
-        public Sample LoadImage(int method, bool isInput = false)
+        public Sample LoadImage(int method, bool isInput = false, bool last = false)
         {
             ClearImage();
-            
-            Bitmap bmp48 = !isInput ? GetRandomImage() : GetInputImage();
+
+            Bitmap bmp48;
+            if (!last)
+            {
+                bmp48 = !isInput ? GetRandomImage() : GetInputImage();
+                lastImage = bmp48;
+            }
+            else
+            {
+                bmp48 = lastImage;
+            }
             // получение изображения
             for (int x = 0; x < Program.size; x++)
             {
