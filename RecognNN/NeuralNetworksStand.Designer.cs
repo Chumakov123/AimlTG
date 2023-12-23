@@ -67,13 +67,13 @@
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.tb_aiml_answer = new System.Windows.Forms.TextBox();
+            this.AIMLOutput = new System.Windows.Forms.TextBox();
             this.bt_aiml_process = new System.Windows.Forms.Button();
-            this.tb_aiml_request = new System.Windows.Forms.TextBox();
+            this.AIMLInput = new System.Windows.Forms.TextBox();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.bt_enable_bot = new System.Windows.Forms.Button();
-            this.tb_tlbot_answer = new System.Windows.Forms.TextBox();
+            this.TLGBotOnButton = new System.Windows.Forms.Button();
+            this.TLGUsersMessages = new System.Windows.Forms.TextBox();
             label2 = new System.Windows.Forms.Label();
             label4 = new System.Windows.Forms.Label();
             label5 = new System.Windows.Forms.Label();
@@ -532,9 +532,9 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.tb_aiml_answer);
+            this.groupBox2.Controls.Add(this.AIMLOutput);
             this.groupBox2.Controls.Add(this.bt_aiml_process);
-            this.groupBox2.Controls.Add(this.tb_aiml_request);
+            this.groupBox2.Controls.Add(this.AIMLInput);
             this.groupBox2.Location = new System.Drawing.Point(803, 24);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(326, 180);
@@ -542,13 +542,13 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "AIML чат-бот";
             // 
-            // tb_aiml_answer
+            // AIMLOutput
             // 
-            this.tb_aiml_answer.Location = new System.Drawing.Point(6, 78);
-            this.tb_aiml_answer.Multiline = true;
-            this.tb_aiml_answer.Name = "tb_aiml_answer";
-            this.tb_aiml_answer.Size = new System.Drawing.Size(314, 96);
-            this.tb_aiml_answer.TabIndex = 2;
+            this.AIMLOutput.Location = new System.Drawing.Point(6, 78);
+            this.AIMLOutput.Multiline = true;
+            this.AIMLOutput.Name = "AIMLOutput";
+            this.AIMLOutput.Size = new System.Drawing.Size(314, 96);
+            this.AIMLOutput.TabIndex = 2;
             // 
             // bt_aiml_process
             // 
@@ -558,18 +558,19 @@
             this.bt_aiml_process.TabIndex = 1;
             this.bt_aiml_process.Text = "Обработать";
             this.bt_aiml_process.UseVisualStyleBackColor = true;
+            this.bt_aiml_process.Click += new System.EventHandler(this.bt_aiml_process_Click);
             // 
-            // tb_aiml_request
+            // AIMLInput
             // 
-            this.tb_aiml_request.Location = new System.Drawing.Point(6, 24);
-            this.tb_aiml_request.Name = "tb_aiml_request";
-            this.tb_aiml_request.Size = new System.Drawing.Size(314, 20);
-            this.tb_aiml_request.TabIndex = 0;
+            this.AIMLInput.Location = new System.Drawing.Point(6, 24);
+            this.AIMLInput.Name = "AIMLInput";
+            this.AIMLInput.Size = new System.Drawing.Size(314, 20);
+            this.AIMLInput.TabIndex = 0;
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.bt_enable_bot);
-            this.groupBox3.Controls.Add(this.tb_tlbot_answer);
+            this.groupBox3.Controls.Add(this.TLGBotOnButton);
+            this.groupBox3.Controls.Add(this.TLGUsersMessages);
             this.groupBox3.Location = new System.Drawing.Point(803, 210);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(326, 313);
@@ -577,22 +578,23 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Telegram";
             // 
-            // bt_enable_bot
+            // TLGBotOnButton
             // 
-            this.bt_enable_bot.Location = new System.Drawing.Point(219, 19);
-            this.bt_enable_bot.Name = "bt_enable_bot";
-            this.bt_enable_bot.Size = new System.Drawing.Size(101, 23);
-            this.bt_enable_bot.TabIndex = 1;
-            this.bt_enable_bot.Text = "Включить бота";
-            this.bt_enable_bot.UseVisualStyleBackColor = true;
+            this.TLGBotOnButton.Location = new System.Drawing.Point(219, 19);
+            this.TLGBotOnButton.Name = "TLGBotOnButton";
+            this.TLGBotOnButton.Size = new System.Drawing.Size(101, 23);
+            this.TLGBotOnButton.TabIndex = 1;
+            this.TLGBotOnButton.Text = "Включить бота";
+            this.TLGBotOnButton.UseVisualStyleBackColor = true;
+            this.TLGBotOnButton.Click += new System.EventHandler(this.TLGBotOnButton_Click);
             // 
-            // tb_tlbot_answer
+            // TLGUsersMessages
             // 
-            this.tb_tlbot_answer.Location = new System.Drawing.Point(6, 48);
-            this.tb_tlbot_answer.Multiline = true;
-            this.tb_tlbot_answer.Name = "tb_tlbot_answer";
-            this.tb_tlbot_answer.Size = new System.Drawing.Size(314, 256);
-            this.tb_tlbot_answer.TabIndex = 0;
+            this.TLGUsersMessages.Location = new System.Drawing.Point(6, 48);
+            this.TLGUsersMessages.Multiline = true;
+            this.TLGUsersMessages.Name = "TLGUsersMessages";
+            this.TLGUsersMessages.Size = new System.Drawing.Size(314, 256);
+            this.TLGUsersMessages.TabIndex = 0;
             // 
             // NeuralNetworksStand
             // 
@@ -671,13 +673,13 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.TextBox tb_aiml_answer;
+        private System.Windows.Forms.TextBox AIMLOutput;
         private System.Windows.Forms.Button bt_aiml_process;
-        private System.Windows.Forms.TextBox tb_aiml_request;
+        private System.Windows.Forms.TextBox AIMLInput;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.TextBox tb_tlbot_answer;
-        private System.Windows.Forms.Button bt_enable_bot;
+        private System.Windows.Forms.TextBox TLGUsersMessages;
+        private System.Windows.Forms.Button TLGBotOnButton;
         private System.Windows.Forms.Button bt_load_network;
         private System.Windows.Forms.CheckBox cb_multy_recogn;
         private System.Windows.Forms.ComboBox cb_methods;

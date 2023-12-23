@@ -16,9 +16,16 @@ using Accord.Neuro;
 
 namespace NeuralNetwork1
 {
+    public delegate void FormUpdater(double progress, double error, TimeSpan time);
+
+    public delegate void UpdateTLGMessages(string msg);
+
     delegate void FormUpdateDelegate();
     public partial class NeuralNetworksStand : Form
     {
+        AIMLBotik botik = new AIMLBotik();
+        TLGBotik tlgBot;
+
         static string path = Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).FullName).FullName;
         /// <summary>
         /// Генератор изображений (образов)
@@ -70,6 +77,18 @@ namespace NeuralNetwork1
             {
                 netStructureBox.Text += ";" + split[i];
             }
+            tlgBot = new TLGBotik(Net, new UpdateTLGMessages(UpdateTLGInfo));
+        }
+
+        public void UpdateTLGInfo(string message)
+        {
+            if (TLGUsersMessages.InvokeRequired)
+            {
+                TLGUsersMessages.Invoke(new UpdateTLGMessages(UpdateTLGInfo), new Object[] { message });
+                return;
+
+            }
+            TLGUsersMessages.Text += message + Environment.NewLine;
         }
 
         public void UpdateLearningInfo(double progress, double error, TimeSpan elapsedTime)
@@ -131,6 +150,36 @@ namespace NeuralNetwork1
             }
             //Sample fig = augmentation.Get30x30();
 
+
+            set_result(fig);
+        }
+
+        private void PredictUserImage()
+        {
+            Sample fig = null;
+            fig = loader.LoadImage(Net.MethodIndex);
+
+            if (!cb_multy_recogn.Checked)
+            {
+                Net.Predict(fig);
+            }
+            else
+            {
+                var output = new double[fig.Output.Length];
+                foreach (var network in networksCache)
+                {
+                    fig = loader.LoadImage(network.Value.MethodIndex, false, true);
+                    network.Value.Predict(fig);
+                    for (int i = 0; i < output.Length; i++)
+                    {
+                        output[i] += fig.Output[i] / networksCache.Count;
+                    }
+                    //Debug.WriteLine("net " + string.Join("\n", fig.Output));
+                    Debug.WriteLine(network.Key + ": " + fig.Correct().ToString());
+                }
+                //Debug.WriteLine("out "+string.Join("\n", output));
+                fig.ProcessPrediction(output);
+            }
 
             set_result(fig);
         }
@@ -211,22 +260,7 @@ namespace NeuralNetwork1
 
         private void button3_Click(object sender, EventArgs e)
         {
-            //  Проверяем корректность задания структуры сети
             int[] structure = CurrentNetworkStructure();
-            //if (structure.Length < 2 || structure[0] != 400 ||
-            //    structure[structure.Length - 1] != generator.FigureCount)
-            //{
-            //    MessageBox.Show(
-            //        $"В сети должно быть более двух слоёв, первый слой должен содержать 400 нейронов, последний - ${generator.FigureCount}",
-            //        "Ошибка", MessageBoxButtons.OK);
-            //    return;
-            //}
-
-            // Чистим старые подписки сетей
-            //foreach (var network in networksCache.Values)
-            //    network.TrainProgress -= UpdateLearningInfo;
-            // Пересоздаём все сети с новой структурой
-            //networksCache = networksCache.ToDictionary(oldNet => oldNet.Key, oldNet => CreateNetwork(oldNet.Key));
             var selectedItem = (string)netTypeBox.SelectedItem;
             if (!networksCache.ContainsKey(selectedItem))
             {
@@ -236,12 +270,16 @@ namespace NeuralNetwork1
 
             // Пересоздаём выбранную сеть с новой структурой
             networksCache[selectedItem] = CreateNetwork(selectedItem);
+
+            tlgBot.SetNet(Net);
         }
 
         private int[] CurrentNetworkStructure()
         {
             return netStructureBox.Text.Split(';').Select(int.Parse).ToArray();
         }
+
+
 
         private void classCounter_ValueChanged(object sender, EventArgs e)
         {
@@ -495,6 +533,19 @@ namespace NeuralNetwork1
                 case 2: netStructureBox.Text = $"{Program.size * 2};{600};{classCounter.Value}"; break;
                 case 3: netStructureBox.Text = $"{Program.size * 2};{600};{classCounter.Value}"; break;
             }
+        }
+
+        private void TLGBotOnButton_Click(object sender, EventArgs e)
+        {
+            tlgBot.Act();
+            TLGBotOnButton.Enabled = false;
+        }
+
+        private void bt_aiml_process_Click(object sender, EventArgs e)
+        {
+            var phrase = AIMLInput.Text;
+            if (phrase.Length > 0)
+                AIMLOutput.Text += botik.Talk(phrase) + Environment.NewLine;
         }
     }
 }

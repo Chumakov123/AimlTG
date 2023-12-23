@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -10,6 +11,8 @@ namespace NeuralNetwork1
 {
     class Loader
     {
+        public static Loader instance;
+
         public bool[] image = new bool[Program.size * Program.size];
         private Random rand = new Random();
 
@@ -27,9 +30,9 @@ namespace NeuralNetwork1
 
         public Loader(Controller _controller, NeuralNetworksStand mainForm = null)
         {
+            instance = this;
             controller = _controller;
             this.mainForm = mainForm;
-
         }
 
         // функция очистки изображений
@@ -238,6 +241,40 @@ namespace NeuralNetwork1
                 for (int y = 0; y < Program.size; y++)
                 {
                     Color newColor = bmp48.GetPixel(x, y);
+                    if (newColor.R < threshold || newColor.G < threshold || newColor.B < threshold)
+                    {
+                        image[x * Program.size + y] = true;
+                    }
+                }
+            }
+
+            switch (method)
+            {
+                case 0:
+                    return MethodSum(); // создание Sample с помощью метода суммирования
+                case 1:
+                    return MethodPixel();
+                case 2:
+                    return MethodAlt(); // создание Sample с помощью метода чередования
+                case 3:
+                    return MethodCombined();
+                default:
+                    return null;
+            }
+        }
+
+        public Sample LoadImage(int method, Bitmap bmp48)
+        {
+            ClearImage();
+            controller.processor.ProcessImage(bmp48, true);
+            var res = controller.processor.processed;
+            res.Save("tg_input.jpg");
+            // получение изображения
+            for (int x = 0; x < Program.size; x++)
+            {
+                for (int y = 0; y < Program.size; y++)
+                {
+                    Color newColor = res.GetPixel(x, y);
                     if (newColor.R < threshold || newColor.G < threshold || newColor.B < threshold)
                     {
                         image[x * Program.size + y] = true;

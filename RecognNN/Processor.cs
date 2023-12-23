@@ -94,8 +94,8 @@ namespace NeuralNetwork1
             //  Минимальная сторона изображения (обычно это высота)
             if (checkAspectRatio)
             {
-                if (bitmap.Height > bitmap.Width)
-                    throw new Exception("К такой забавной камере меня жизнь не готовила!");
+                //if (bitmap.Height > bitmap.Width)
+                //    throw new Exception("К такой забавной камере меня жизнь не готовила!");
                 //  Можно было, конечено, и не кидаться эксепшенами в истерике, но идите и купите себе нормальную камеру!
                 int side = System.Math.Min(bitmap.Height, bitmap.Width);
 
