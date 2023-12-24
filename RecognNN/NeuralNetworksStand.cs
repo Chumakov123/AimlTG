@@ -16,6 +16,7 @@ using Accord.Neuro;
 
 namespace NeuralNetwork1
 {
+
     public delegate void FormUpdater(double progress, double error, TimeSpan time);
 
     public delegate void UpdateTLGMessages(string msg);
@@ -23,6 +24,7 @@ namespace NeuralNetwork1
     delegate void FormUpdateDelegate();
     public partial class NeuralNetworksStand : Form
     {
+        public static NeuralNetworksStand instance;
         AIMLBotik botik = new AIMLBotik();
         TLGBotik tlgBot;
 
@@ -41,12 +43,26 @@ namespace NeuralNetwork1
         {
             get
             {
-                var selectedItem = (string)netTypeBox.SelectedItem;
-                if (!networksCache.ContainsKey(selectedItem))
-                    networksCache.Add(selectedItem, CreateNetwork(selectedItem));
-
-                return networksCache[selectedItem];
+                if (netTypeBox.InvokeRequired)
+                {
+                    // Если вызов происходит из другого потока, используем Invoke
+                    return (BaseNetwork)netTypeBox.Invoke(new Func<BaseNetwork>(() => GetSelectedNetwork()));
+                }
+                else
+                {
+                    // Иначе просто получаем выбранный элемент
+                    return GetSelectedNetwork();
+                }
             }
+        }
+
+        private BaseNetwork GetSelectedNetwork()
+        {
+            var selectedItem = (string)netTypeBox.SelectedItem;
+            if (!networksCache.ContainsKey(selectedItem))
+                networksCache.Add(selectedItem, CreateNetwork(selectedItem));
+
+            return networksCache[selectedItem];
         }
 
         private readonly Dictionary<string, Func<int[], BaseNetwork>> networksFabric;
@@ -58,6 +74,7 @@ namespace NeuralNetwork1
         /// <param name="networksFabric">Словарь функций, создающих сети с заданной структурой</param>
         public NeuralNetworksStand(Dictionary<string, Func<int[], BaseNetwork>> networksFabric)
         {
+            instance = this;
             InitializeComponent();
             this.networksFabric = networksFabric;
             netTypeBox.Items.AddRange(this.networksFabric.Keys.Select(s => (object)s).ToArray());
@@ -98,7 +115,6 @@ namespace NeuralNetwork1
                 progressBar1.Invoke(new TrainProgressHandler(UpdateLearningInfo), progress, error, elapsedTime);
                 return;
             }
-
             st_lable.Text = "Ошибка: " + error;
             int progressPercent = (int)Math.Round(progress * 100);
             progressPercent = Math.Min(100, Math.Max(0, progressPercent));
@@ -109,6 +125,13 @@ namespace NeuralNetwork1
 
         private void set_result(Sample figure)
         {
+            if (InvokeRequired)
+            {
+                // If it is, invoke the method on the UI thread
+                Invoke(new Action(() => set_result(figure)));
+                return;
+            }
+
             label1.ForeColor = figure.Correct() ? Color.Green : Color.Red;
 
             label1.Text = "Распознано : " + Program.titles[figure.recognizedClass];
@@ -546,6 +569,14 @@ namespace NeuralNetwork1
             var phrase = AIMLInput.Text;
             if (phrase.Length > 0)
                 AIMLOutput.Text += botik.Talk(phrase) + Environment.NewLine;
+        }
+
+        internal FigureType RecognTGImage(Bitmap bm)
+        {
+            var fig = loader.LoadImage(Program.MethodIndex, bm);
+            var res = Net.Predict(fig);
+            set_result(fig);
+            return res;
         }
     }
 }

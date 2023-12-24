@@ -58,8 +58,8 @@ namespace NeuralNetwork1
         /// <summary>
         /// Порог при отсечении по цвету 
         /// </summary>
-        public byte threshold = 20;
-        public float differenceLim = (float)20.0 / 255;
+        public byte threshold = 50;
+        public float differenceLim = (float)50.0 / 255;
 
         public void incTop() { if (top < 2 * _border) ++top; }
         public void decTop() { if (top > 0) --top; }
@@ -92,16 +92,15 @@ namespace NeuralNetwork1
             // На вход поступает необработанное изображение с веб-камеры
 
             //  Минимальная сторона изображения (обычно это высота)
-            if (checkAspectRatio)
+            if (checkAspectRatio && bitmap.Height > bitmap.Width)
             {
-                //if (bitmap.Height > bitmap.Width)
-                //    throw new Exception("К такой забавной камере меня жизнь не готовила!");
-                //  Можно было, конечено, и не кидаться эксепшенами в истерике, но идите и купите себе нормальную камеру!
-                int side = System.Math.Min(bitmap.Height, bitmap.Width);
+                int side = bitmap.Width; // Выбираем ширину как сторону квадрата
+                int topBottomMargin = (bitmap.Height - side) / 2; // Вычисляем верхнее и нижнее отступы
 
-                AForge.Imaging.Filters.Crop cropFilter = new AForge.Imaging.Filters.Crop(new Rectangle((bitmap.Width - bitmap.Height) / 2, 0, side, side));
+                AForge.Imaging.Filters.Crop cropFilter = new AForge.Imaging.Filters.Crop(new Rectangle(0, topBottomMargin, side, side));
                 original = cropFilter.Apply(bitmap);
-            } else
+            }
+            else
             {
                 original = bitmap;
             }

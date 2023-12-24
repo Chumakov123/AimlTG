@@ -55,9 +55,16 @@ namespace NeuralNetwork1
                 
                 System.Drawing.Bitmap bm = new System.Drawing.Bitmap(img);
 
-                Sample sample = Loader.instance.LoadImage(perseptron.MethodIndex, bm);
+                //Sample sample = Loader.instance.LoadImage(perseptron.MethodIndex, bm);
+                FigureType res = await Task.Run(() =>
+                {
+                    // Замените formUpdater на Invoke, если он взаимодействует с UI
+                    //Invoke(new Action(() => formUpdater("Picture recognized!")));
 
-                switch(perseptron.Predict(sample))
+                    return NeuralNetworksStand.instance.RecognTGImage(bm);
+                });
+
+                switch (res)
                 {
                     case FigureType.Play: botik.SendTextMessageAsync(message.Chat.Id, "Это легко, это кнопка Play!");break;
                     case FigureType.Pause: botik.SendTextMessageAsync(message.Chat.Id, "Это легко, Pause!"); break;
