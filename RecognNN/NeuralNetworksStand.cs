@@ -94,7 +94,8 @@ namespace NeuralNetwork1
             {
                 netStructureBox.Text += ";" + split[i];
             }
-            tlgBot = new TLGBotik(Net, new UpdateTLGMessages(UpdateTLGInfo));
+            
+            tlgBot = new TLGBotik(Net, new UpdateTLGMessages(UpdateTLGInfo), botik);
         }
 
         public void UpdateTLGInfo(string message)
@@ -210,14 +211,14 @@ namespace NeuralNetwork1
         private async Task<double> train_networkAsync(int training_size, int epoches, double acceptable_error,
             bool parallel = true)
         {
-            //  Выключаем всё ненужное
+            //  Выключаем все ненужное
             label1.Text = "Выполняется обучение...";
             label1.ForeColor = Color.Red;
             groupBox1.Enabled = false;
             pictureBox1.Enabled = false;
             //trainOneButton.Enabled = false;
 
-            //  Создаём новую обучающую выборку
+            //  Создаем новую обучающую выборку
             SamplesSet samples = null;
             samples = loader.LoadSampleSet();
             Debug.WriteLine(samples.Count);
@@ -261,7 +262,7 @@ namespace NeuralNetwork1
         {
             Enabled = false;
             //  Тут просто тестирование новой выборки
-            //  Создаём новую обучающую выборку
+            //  Создаем новую обучающую выборку
             //SamplesSet samples = loader.LoadSampleSetTest();
             SamplesSet samples = null;
             samples = loader.LoadSampleSetTest();
@@ -291,7 +292,7 @@ namespace NeuralNetwork1
             }
             networksCache[selectedItem].TrainProgress -= UpdateLearningInfo;
 
-            // Пересоздаём выбранную сеть с новой структурой
+            // Пересоздаем выбранную сеть с новой структурой
             networksCache[selectedItem] = CreateNetwork(selectedItem);
 
             tlgBot.SetNet(Net);
@@ -339,7 +340,7 @@ namespace NeuralNetwork1
 
         private void recreateNetButton_MouseEnter(object sender, EventArgs e)
         {
-            //infoStatusLabel.Text = "Заново пересоздаёт сеть с указанными параметрами";
+            //infoStatusLabel.Text = "Заново пересоздает сеть с указанными параметрами";
         }
 
         private void netTrainButton_MouseEnter(object sender, EventArgs e)
@@ -392,7 +393,7 @@ namespace NeuralNetwork1
         }
 
         /// <summary>
-        /// Обёртка для обновления формы - перерисовки картинок, изменения состояния и прочего
+        /// Обертка для обновления формы - перерисовки картинок, изменения состояния и прочего
         /// </summary>
         /// <param name="StateInfo"></param>
         public void Tick(object StateInfo)
@@ -413,7 +414,7 @@ namespace NeuralNetwork1
             if (updateTmr != null)
                 updateTmr.Dispose();
 
-            //  Как-то надо ещё робота подождать, если он работает
+            //  Как-то надо еще робота подождать, если он работает
 
             if (videoSource != null && videoSource.IsRunning)
             {

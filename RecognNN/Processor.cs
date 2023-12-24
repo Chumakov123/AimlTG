@@ -115,7 +115,7 @@ namespace NeuralNetwork1
             uProcessed = scaleFilter.Apply(uProcessed);
             original = scaleFilter.Apply(original);
             Graphics g = Graphics.FromImage(original);
-            //  Пороговый фильтр применяем. Величина порога берётся из настроек, и меняется на форме
+            //  Пороговый фильтр применяем. Величина порога берется из настроек, и меняется на форме
             AForge.Imaging.Filters.BradleyLocalThresholding threshldFilter = new AForge.Imaging.Filters.BradleyLocalThresholding();
             threshldFilter.PixelBrightnessDifferenceLimit = settings.differenceLim;
             threshldFilter.ApplyInPlace(uProcessed);
@@ -145,7 +145,7 @@ namespace NeuralNetwork1
             AForge.Imaging.Filters.Invert InvertFilter = new AForge.Imaging.Filters.Invert();
             InvertFilter.ApplyInPlace(unmanaged);
 
-            ///    Создаём BlobCounter, выдёргиваем самый большой кусок, масштабируем, пересечение и сохраняем
+            ///    Создаем BlobCounter, выдергиваем самый большой кусок, масштабируем, пересечение и сохраняем
             ///    изображение в эксклюзивном использовании
             AForge.Imaging.BlobCounterBase bc = new AForge.Imaging.BlobCounter();
 
@@ -166,7 +166,7 @@ namespace NeuralNetwork1
             //    return 0;
             //}
 
-            // К сожалению, код с использованием подсчёта blob'ов не работает, поэтому просто высчитываем максимальное покрытие
+            // К сожалению, код с использованием подсчета blob'ов не работает, поэтому просто высчитываем максимальное покрытие
             // для всех блобов - для нескольких цифр, к примеру, 16, можем получить две области - отдельно для 1, и отдельно для 6.
             // Строим оболочку, включающую все блоки. Решение плохое, требуется доработка
             int lx = unmanaged.Width;

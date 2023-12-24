@@ -4,7 +4,7 @@ namespace NeuralNetwork1
 {
     public delegate void TrainProgressHandler(double progress, double error, TimeSpan time);
     /// <summary>
-    /// Базовый класс для реализации как самодельного персептрона, так и обёртки для ActivationNetwork из Accord.Net
+    /// Базовый класс для реализации как самодельного персептрона, так и обертки для ActivationNetwork из Accord.Net
     /// </summary>
     public abstract class BaseNetwork
     {
@@ -35,14 +35,14 @@ namespace NeuralNetwork1
         public abstract double TrainOnDataSet(SamplesSet samplesSet, int epochsCount, double acceptableError, bool parallel);
 
         /// <summary>
-        /// Подсчёт результата работы сети на данном входе.
+        /// Подсчет результата работы сети на данном входе.
         /// </summary>
         /// <param name="input">Входные данные для первого слоя</param>
         /// <returns></returns>
         public abstract double[] Compute(double[] input);
 
         /// <summary>
-        /// Угадывает тип фигуры на основе результатов подсчётов сети.
+        /// Угадывает тип фигуры на основе результатов подсчетов сети.
         /// </summary>
         /// <param name="sample">Фигура, которую необходимо определить</param>
         /// <returns></returns>
@@ -53,7 +53,7 @@ namespace NeuralNetwork1
         public abstract void Print();
 
         /// <summary>
-        /// Обёртка над событием для оповещения подписчиков
+        /// Обертка над событием для оповещения подписчиков
         /// </summary>
         /// <param name="progress">Приблизительная оценка прогресса от 0 до 1</param>
         /// <param name="error">Текущая ошибка</param>

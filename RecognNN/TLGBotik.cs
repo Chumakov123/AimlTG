@@ -22,13 +22,16 @@ namespace NeuralNetwork1
 
         private BaseNetwork perseptron = null;
         // CancellationToken - инструмент для отмены задач, запущенных в отдельном потоке
+        public string Username { get; private set; }
         private readonly CancellationTokenSource cts = new CancellationTokenSource();
-        public TLGBotik(BaseNetwork net,  UpdateTLGMessages updater)
+        private AIMLBotik aiml;
+        public TLGBotik(BaseNetwork net,  UpdateTLGMessages updater, AIMLBotik aiml = null)
         { 
             var botKey = System.IO.File.ReadAllText("botkey.txt");
             botik = new Telegram.Bot.TelegramBotClient(botKey);
             formUpdater = updater;
             perseptron = net;
+            this.aiml = aiml;
         }
 
         public void SetNet(BaseNetwork net)
@@ -41,8 +44,20 @@ namespace NeuralNetwork1
         {
             //  Тут очень простое дело - банально отправляем назад сообщения
             var message = update.Message;
+            var chatId = message.Chat.Id;
+            var username = message.Chat.FirstName;
             formUpdater("Тип сообщения : " + message.Type.ToString());
 
+            if (message.Type == MessageType.Text)
+            {
+                var messageText = update.Message.Text;
+
+                await botClient.SendTextMessageAsync(
+                    chatId: chatId,
+                    text: aiml.Talk(chatId, username, messageText),
+                    cancellationToken: cancellationToken);
+                return;
+            }
             //  Получение файла (картинки)
             if (message.Type == Telegram.Bot.Types.Enums.MessageType.Photo)
             {
@@ -63,35 +78,43 @@ namespace NeuralNetwork1
 
                     return NeuralNetworksStand.instance.RecognTGImage(bm);
                 });
+                //Random random = new Random();
 
-                switch (res)
-                {
-                    case FigureType.Play: botik.SendTextMessageAsync(message.Chat.Id, "Это легко, это кнопка Play!");break;
-                    case FigureType.Pause: botik.SendTextMessageAsync(message.Chat.Id, "Это легко, Pause!"); break;
-                    case FigureType.Rec: botik.SendTextMessageAsync(message.Chat.Id, "Это Rec!"); break;
-                    case FigureType.Stop: botik.SendTextMessageAsync(message.Chat.Id, "Это легко, это был Stop!"); break;
-                    case FigureType.SpeedDown: botik.SendTextMessageAsync(message.Chat.Id, "Это легко, это кнопка SpeedDown!"); break;
-                    case FigureType.SpeedUp: botik.SendTextMessageAsync(message.Chat.Id, "Это легко, SpeedUp!"); break;
-                    case FigureType.NextFrame: botik.SendTextMessageAsync(message.Chat.Id, "Это NextFrame!"); break;
-                    case FigureType.PrevFrame: botik.SendTextMessageAsync(message.Chat.Id, "Это легко, это был PrevFrame!"); break;
-                    case FigureType.SkipForward: botik.SendTextMessageAsync(message.Chat.Id, "Это легко, это кнопка SkipForward!"); break;
-                    case FigureType.SkipBackward: botik.SendTextMessageAsync(message.Chat.Id, "Это легко, SkipBackward!"); break;
-                    default: botik.SendTextMessageAsync(message.Chat.Id, "Я такого не знаю!"); break;
-                }
+                //List<string> messages = new List<string>
+                //{
+                //    $"Это легко, это кнопка \"{Program.titles[res]}\"!",
+                //    $"Это легко, кнопка \"{Program.titles[res]}\"!",
+                //    $"Это легко, это была кнопка \"{Program.titles[res]}\"!",
+                //    $"Это \"{Program.titles[res]}\"!",
+                //    $"Полагаю, что это \"{Program.titles[res]}\"."
+                //};
+
+                //int randomIndex = random.Next(messages.Count);
+
+                //// Отправляем сообщение
+                //await botik.SendTextMessageAsync(message.Chat.Id, messages[randomIndex]);
+                string predicted = Program.titles[res];
+
+                await botClient.SendTextMessageAsync(
+                     chatId: chatId,
+                     text: aiml.Talk(chatId, username, predicted),
+                     cancellationToken: cancellationToken);
 
                 formUpdater("Picture recognized!");
                 return;
-            }
 
-            if (message == null || message.Type != MessageType.Text) return;
-            if(message.Text == "Authors")
-            {
-                string authors = "Гаянэ Аршакян, Луспарон Тызыхян, Дамир Казеев, Роман Хыдыров, Владимир Садовский, Анастасия Аскерова, Константин Бервинов, и Борис Трикоз (но он уже спать ушел) и молчаливый Даниил Ярошенко, а год спустя ещё Иванченко Вячеслав";
-                botik.SendTextMessageAsync(message.Chat.Id, "Авторы проекта : " + authors);
+                //return;
             }
-            botik.SendTextMessageAsync(message.Chat.Id, "Bot reply : " + message.Text);
-            formUpdater(message.Text);
-            return;
+            if (message.Type == MessageType.Video)
+            {
+                await botik.SendTextMessageAsync(message.Chat.Id, aiml.Talk(chatId, username, "Видео"), cancellationToken: cancellationToken);
+                return;
+            }
+            if (message.Type == MessageType.Audio)
+            {
+                await botik.SendTextMessageAsync(message.Chat.Id, aiml.Talk(chatId, username, "Аудио"), cancellationToken: cancellationToken);
+                return;
+            }
         }
         Task HandleErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
         {
@@ -114,6 +137,7 @@ namespace NeuralNetwork1
                 cancellationToken: cts.Token);
                 // Пробуем получить логин бота - тестируем соединение и токен
                 Console.WriteLine($"Connected as {botik.GetMeAsync().Result}");
+                Username = botik.GetMeAsync().Result.Username;
             }
             catch(Exception e) { 
                 return false;

@@ -168,6 +168,7 @@
     <Compile Include="TLGBotik.cs" />
     <EmbeddedResource Include="NeuralNetworksStand.resx">
       <DependentUpon>NeuralNetworksStand.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -180,7 +181,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="aiml\russian.aiml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

@@ -75,7 +75,7 @@ namespace NeuralNetwork1
 
         
         /// <summary>
-        /// Задаёт изображение для обработки
+        /// Задает изображение для обработки
         /// </summary>
         /// <param name="image">Собственно изображение для обработки</param>
         /// <returns></returns>

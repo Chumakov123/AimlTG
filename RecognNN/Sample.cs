@@ -57,7 +57,7 @@ namespace NeuralNetwork1
         }
 
         /// <summary>
-        /// Выходной вектор, задаётся извне как результат распознавания
+        /// Выходной вектор, задается извне как результат распознавания
         /// </summary>
         public double[] Output { get; private set; }
 
@@ -70,7 +70,7 @@ namespace NeuralNetwork1
             if (error == null)
                 error = new double[Output.Length];
 
-            //  Нам так-то выход не нужен, нужна ошибка и определённый класс
+            //  Нам так-то выход не нужен, нужна ошибка и определенный класс
             recognizedClass = 0;
             for (int i = 0; i < Output.Length; ++i)
             {
@@ -190,6 +190,6 @@ namespace NeuralNetwork1
             return correct / (correct + wrong);
         }
 
-        // Тут бы ещё сохранение в файл и чтение сделать, вообще классно было бы
+        // Тут бы еще сохранение в файл и чтение сделать, вообще классно было бы
     }
 }

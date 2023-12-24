@@ -354,7 +354,7 @@
             this.parallelCheckBox.Name = "parallelCheckBox";
             this.parallelCheckBox.Size = new System.Drawing.Size(139, 17);
             this.parallelCheckBox.TabIndex = 19;
-            this.parallelCheckBox.Text = "Параллельный расчёт";
+            this.parallelCheckBox.Text = "Параллельный расчет";
             this.parallelCheckBox.UseVisualStyleBackColor = true;
             // 
             // netStructureBox
